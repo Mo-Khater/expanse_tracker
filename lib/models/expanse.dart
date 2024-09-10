@@ -33,3 +33,26 @@ class Expanse {
     return formatter.format(date);
   }
 }
+
+class ExpanseBacket {
+  final Category category;
+  final List<Expanse> expanses;
+
+  ExpanseBacket(this.expanses,this.category);
+
+  ExpanseBacket.forCategory(
+      List<Expanse> allExpanses, this.category)
+      : expanses = allExpanses
+            .where((expanse) => expanse.category == category)
+            .toList();
+
+  double get categoryAmount{
+    double sum=0;
+    for(final expanse in expanses){
+      sum+=expanse.amount;
+    }
+    return sum;
+  }
+
+  
+}

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:expanse_tracker/models/expanse.dart';
 
 class NewExpanse extends StatefulWidget {
-  const NewExpanse({super.key});
+  final void Function(Expanse) addExpanse;
+  const NewExpanse(this.addExpanse, {super.key});
   @override
   State<NewExpanse> createState() {
     return _NewExpanseState();
@@ -48,6 +49,13 @@ class _NewExpanseState extends State<NewExpanse> {
       );
       return;
     }
+    final Expanse newExpanse = Expanse(
+        date: _selectedDate!,
+        titel: _titleController.text,
+        amount: amount,
+        category: _selectedCategory);
+    Navigator.pop(context);
+    widget.addExpanse(newExpanse);
   }
 
   @override
@@ -60,7 +68,7 @@ class _NewExpanseState extends State<NewExpanse> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
       child: Column(
         children: [
           TextField(

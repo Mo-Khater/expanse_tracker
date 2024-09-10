@@ -13,7 +13,13 @@ class ExpansesCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(expanse.titel),
+            Text(
+              expanse.titel,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             Row(
               children: [
                 Text('\$${expanse.amount.toStringAsFixed(2)}'),

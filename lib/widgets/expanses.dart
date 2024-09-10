@@ -1,3 +1,4 @@
+import 'package:expanse_tracker/widgets/chart/chart.dart';
 import 'package:expanse_tracker/widgets/expanses_list/expanses_list.dart';
 import 'package:expanse_tracker/models/expanse.dart';
 import 'package:expanse_tracker/widgets/new_expanse.dart';
@@ -26,24 +27,62 @@ class _ExpansesState extends State<Expanses> {
         category: Category.leisure),
   ];
 
+  void addExpanse(Expanse newExpanse) {
+    setState(() {
+      _expanses.add(newExpanse);
+    });
+  }
+
   void _addExpense() {
     //showModalBottomSheet
     showModalBottomSheet(
-        context: context, builder: (ctx) => const NewExpanse());
+        isScrollControlled: true,
+        context: context,
+        builder: (ctx) => NewExpanse(addExpanse));
+  }
+
+  void _removeExpense(Expanse expanse) {
+    final expanseIndex = _expanses.indexOf(expanse);
+    setState(() {
+      _expanses.remove(expanse);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('expanse deleted'),
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              setState(() {
+                _expanses.insert(expanseIndex, expanse);
+              });
+            }),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = const Center(
+      child: Text('no expanses found start add some'),
+    );
+
+    if (_expanses.isNotEmpty) {
+      mainContent = ExpansesList(_expanses, _removeExpense);
+    }
+
     return Scaffold(
       appBar: AppBar(
+        title: const Text("flutter expanse tracker"),
         actions: [
           IconButton(onPressed: _addExpense, icon: const Icon(Icons.add))
         ],
       ),
       body: Column(
         children: [
-          const Text("char"),
-          Expanded(child: ExpansesList(_expanses))
+          Chart(expenses: _expanses),
+          Expanded(child: mainContent),
         ],
       ),
     );
